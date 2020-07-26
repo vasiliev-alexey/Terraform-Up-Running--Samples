@@ -12,7 +12,7 @@ provider "google" {
 
 resource "google_compute_instance" "example" {
   name         = "test"
-  machine_type = "f1-micro"
+  machine_type = var.machine_type
   description  = "Тестовая машина для GCP"
 
   depends_on = [google_compute_network.default]
@@ -45,21 +45,27 @@ resource "google_compute_instance" "example" {
   metadata_startup_script = <<-EOF
 #!/bin/bash
 echo "Hello, World" > index.html
-nohup busybox httpd -f -p 8080 &
+nohup busybox httpd -f -p ${var.server_port} &
 EOF
+
+lifecycle {
+create_before_destroy = true
+}
+
 
 }
 
 
 resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
-  network = google_compute_network.default.name
+  name        = "test-firewall"
+  description = "Фаерволл: открываем порты для Веб-сервера , ssh, icmp"
+  network     = google_compute_network.default.name
 
 
 
   allow {
     protocol = "tcp"
-    ports    = ["8080", "22"]
+    ports    = [var.server_port, "22"]
   }
 
 
@@ -68,7 +74,7 @@ resource "google_compute_firewall" "default" {
 
   }
   source_ranges = [
-    "0.0.0.0/0"
+    var.source_ranges
   ]
 
   target_tags = ["web"]
