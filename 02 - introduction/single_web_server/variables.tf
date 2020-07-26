@@ -1,5 +1,5 @@
 variable "project_name" {
-  default = "inbound-coast-275214"
+   type = string
 }
 
 variable "region_name" {
