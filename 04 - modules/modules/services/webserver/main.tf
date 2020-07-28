@@ -2,6 +2,15 @@ terraform {
   required_version = ">= 0.12.26"
 }
 
+locals {
+  http_port    = 80
+  any_port     = 0
+  any_protocol = "-1"
+  tcp_protocol = "tcp"
+  all_ips      = "0.0.0.0/0"
+}
+
+
 resource "google_compute_instance" "example" {
   name         = "${var.instance_name}"
   machine_type = var.machine_type
@@ -66,7 +75,7 @@ resource "google_compute_firewall" "default" {
 
   }
   source_ranges = [
-    var.source_ranges
+    local.all_ips
   ]
 
   target_tags = ["web"]

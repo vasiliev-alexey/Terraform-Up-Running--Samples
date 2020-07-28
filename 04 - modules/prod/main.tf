@@ -15,5 +15,7 @@ source="../modules/services/webserver"
   region_name  = var.region_name
   location_name    = var.location_name
   machine_type = var.machine_type
-  instance_name = "production_server"
+  instance_name = "production-server"
+
+
 }
